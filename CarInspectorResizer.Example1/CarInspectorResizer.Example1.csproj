@@ -23,10 +23,6 @@
     <GameAssembly Include="Unity.TextMeshPro" />
     <GameAssembly Include="Railloader.Interchange" />
     <GameAssembly Include="Serilog" />    
+    <GameAssembly Include="CarInspectorResizer" />    
   </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\CarInspectorResizer\CarInspectorResizer.csproj">
-          <Private>False</Private>
-        </ProjectReference>
-    </ItemGroup>
 </Project>

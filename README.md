@@ -1,10 +1,14 @@
 # Railroader Mod: CarInspectorResizer
 
-This mod is useless on its own, but it is allowing other mods to extend car inspectino window height.
+This mod is useless on its own, but it is allowing other mods to extend car inspector window height.
 
-`CarInspectorResizer.Example1` and `CarInspectorResizer.Example2` are example mods to ilustrate how multiple mods can tweak car inspector height.
+## Installation
 
-Usage:
+* Download `CarInspectorResizer-VERSION.zip` from the releases page
+* Install with [Railloader]([https://www.nexusmods.com/site/mods/21](https://railroader.stelltis.ch/))
+
+
+## Instructions for modders:
 1. Add reference to this mod (duh)
 2. Add this harmony patch to your mod:
 ```
@@ -15,21 +19,25 @@ internal static class CarInspectorPatches {
     [HarmonyPatch(typeof(CarInspector), "Awake")]
     public static void Awake(ref Window ____window) {
         var windowAutoHeight = ____window.gameObject!.GetComponent<CarInspectorAutoHeightBehavior>()!;
-        windowAutoHeight.MinHeight = 330;                           // window minimal height (330 is default value)
-        windowAutoHeight.ExpandTab("equipment", 75);                // this will expand window by 75 units when equipment tab is selected
-        windowAutoHeight.ExpandOrders(AutoEngineerMode.Road, 50);   // this will expand window by 50 units when Road mode on orders tab is selected
-        windowAutoHeight.ExpandOrders(AutoEngineerMode.Yard, 100);  // this will expand window by 100 units when Yard mode on orders tab is selected
+        
+        // car inspector window minimal height (330 is default value)
+        windowAutoHeight.MinHeight = 330;           
+        
+        // this will expand car inspector window by 75 units when equipment tab is selected        
+        windowAutoHeight.ExpandTab("equipment", 75);   
+        
+        // this will expand car inspector window by 50 units when Road mode on orders tab is selected        
+        windowAutoHeight.ExpandOrders(AutoEngineerMode.Road, 50);  
+        
+        // this will expand car inspector window by 100 units when Yard mode on orders tab is selected        
+        windowAutoHeight.ExpandOrders(AutoEngineerMode.Yard, 100); 
     }
 }
 ```
 
 Vanila game tab names are `car`, `equipment`, `pass`, `ops` and `orders`. You need to use those in `ExpandTab` method
 
-## Installation
-
-* Download `CarInspectorResizer-VERSION.zip` from the releases page
-* Install with [Railloader]([https://www.nexusmods.com/site/mods/21](https://railroader.stelltis.ch/))
-
+You can look how `CarInspectorResizer.Example#` project is constructed to have working example.
 
 ## Project Setup
 

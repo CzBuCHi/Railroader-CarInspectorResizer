@@ -1,0 +1,9 @@
+{
+    "manifestVersion": 1,
+    "id": "CarInspectorResizer",
+    "name": "CarInspectorResizer",
+    "version": "$(AssemblyVersion)",
+    "assemblies": [
+        "CarInspectorResizer"
+    ]
+}

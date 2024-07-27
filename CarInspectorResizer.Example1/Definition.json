@@ -1,0 +1,15 @@
+{
+    "manifestVersion": 1,
+    "id": "CarInspectorResizer.Example1",
+    "name": "CarInspectorResizer.Example1",
+    "version": "$(AssemblyVersion)",
+    "assemblies": [
+        "CarInspectorResizer.Example1"
+    ],
+    "requires": [
+        {
+            "id": "CarInspectorResizer",
+            "notBefore": "1.0.0"
+        }
+    ]
+}

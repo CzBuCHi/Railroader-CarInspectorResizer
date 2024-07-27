@@ -63,7 +63,7 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
         _OrdersExpansions[mode] = value + height;
     }
 
-    private void UpdateWindowHeight() {
+    public void UpdateWindowHeight() {
         if (_Car == null) {
             return;
         }

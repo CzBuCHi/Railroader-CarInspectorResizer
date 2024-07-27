@@ -71,9 +71,10 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
 
         var height = MinHeight;
 
-        _TabExpansions.TryGetValue(SelectedTabState.Value!, out var tabExpansion);
-        height += tabExpansion;
-
+        if (SelectedTabState.Value != null) {
+            _TabExpansions.TryGetValue(SelectedTabState.Value, out var tabExpansion);
+            height += tabExpansion;
+        }
 
         if (SelectedTabState.Value == "orders") {
             _OrdersExpansions.TryGetValue(mode, out var ordersExpansion);

@@ -24,6 +24,8 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
     private readonly Dictionary<string, float> _TabExpansions = new();
     private readonly Dictionary<AutoEngineerMode, float> _OrdersExpansions = new();
 
+    private static Vector2? _OriginalWindowSize;
+
     public float MinHeight { get; set; } = 330;
 
     public void Awake() {
@@ -37,6 +39,8 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
         }
 
         _Car = car;
+
+        _OriginalWindowSize ??= _Window.GetContentSize();
 
         foreach (var observer in _Observers) {
             observer.Dispose();
@@ -64,7 +68,7 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
     }
 
     public void UpdateWindowHeight() {
-        if (_Car == null) {
+        if (_Car == null || _OriginalWindowSize == null) {
             return;
         }
 
@@ -72,7 +76,7 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
         var helper = new AutoEngineerOrdersHelper(_Car, persistence);
         var mode = helper.Mode();
 
-        var height = MinHeight + _ExpandAlways;
+        var height = _OriginalWindowSize.Value.y + _ExpandAlways;
 
         if (SelectedTabState.Value != null) {
             _TabExpansions.TryGetValue(SelectedTabState.Value, out var tabExpansion);
@@ -88,12 +92,11 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
             }
 
             if (persistence.ContextualOrders!.Count > 0) {
-                height += 40;
+                height += 30;
             }
         }
 
-        var size = _Window.GetContentSize();
-        _Window.SetContentSize(new Vector2(size.x - 2, Mathf.Max(MinHeight, height)));
+        _Window.SetContentSize(new Vector2(_OriginalWindowSize.Value.x, Mathf.Max(MinHeight, height)));
     }
 
 }

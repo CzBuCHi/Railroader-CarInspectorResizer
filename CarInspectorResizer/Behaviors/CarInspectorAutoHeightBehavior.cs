@@ -19,7 +19,8 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
     private readonly HashSet<IDisposable> _Observers = new();
     private Car? _Car;
     private Window _Window = null!;
-    
+
+    private float _ExpandAlways;
     private readonly Dictionary<string, float> _TabExpansions = new();
     private readonly Dictionary<AutoEngineerMode, float> _OrdersExpansions = new();
 
@@ -48,6 +49,10 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
         _Observers.Add(persistence.ObserveContextualOrdersChanged(UpdateWindowHeight));
     }
 
+    public void ExpandAlways(float height) {
+        _ExpandAlways += height;
+    }
+
     public void ExpandTab(string tabName, float height) {
         _TabExpansions.TryGetValue(tabName, out var value);
         _TabExpansions[tabName] = value + height;
@@ -67,9 +72,7 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
         var helper = new AutoEngineerOrdersHelper(_Car, persistence);
         var mode = helper.Mode();
 
-        var size = _Window.GetContentSize();
-
-        var height = MinHeight;
+        var height = MinHeight + _ExpandAlways;
 
         if (SelectedTabState.Value != null) {
             _TabExpansions.TryGetValue(SelectedTabState.Value, out var tabExpansion);
@@ -89,6 +92,7 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
             }
         }
 
+        var size = _Window.GetContentSize();
         _Window.SetContentSize(new Vector2(size.x - 2, Mathf.Max(MinHeight, height)));
     }
 

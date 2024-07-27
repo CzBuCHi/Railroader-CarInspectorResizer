@@ -21,6 +21,7 @@ internal static class CarInspectorPatches {
     [HarmonyPatch(typeof(CarInspector), "Awake")]
     public static void Awake(ref Window ____window) {
         var windowAutoHeight = ____window.gameObject!.GetComponent<CarInspectorAutoHeightBehavior>()!;
+        windowAutoHeight.ExpandAlways(30);
         windowAutoHeight.ExpandTab("equipment", 50);
         windowAutoHeight.ExpandOrders(AutoEngineerMode.Road, 50);
     }

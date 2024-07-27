@@ -23,6 +23,9 @@ internal static class CarInspectorPatches {
         // car inspector window minimal height (330 is default value)
         windowAutoHeight.MinHeight = 330;           
         
+        // this will expand car inspector window 30 unit
+        windowAutoHeight.ExpandAlways(30);
+        
         // this will expand car inspector window by 75 units when equipment tab is selected        
         windowAutoHeight.ExpandTab("equipment", 75);   
         

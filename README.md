@@ -16,8 +16,8 @@ This mod is useless on its own, but it is allowing other mods to extend car insp
 internal static class CarInspectorPatches {
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(CarInspector), "Awake")]
-    public static void Awake(ref Window ____window) {
+    [HarmonyPatch(typeof(CarInspector), "Populate")]
+    public static void Populate(ref Window ____window) {
         var windowAutoHeight = ____window.gameObject!.GetComponent<CarInspectorAutoHeightBehavior>()!;
         
         // car inspector window minimal height (330 is default value)
@@ -34,6 +34,9 @@ internal static class CarInspectorPatches {
         
         // this will expand car inspector window by 100 units when Yard mode on orders tab is selected        
         windowAutoHeight.ExpandOrders(AutoEngineerMode.Yard, 100); 
+        
+        // update window height
+        windowAutoHeight.UpdateWindowHeight();
     }
 }
 ```

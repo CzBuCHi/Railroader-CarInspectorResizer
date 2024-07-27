@@ -18,11 +18,12 @@ using UI.EngineControls;
 internal static class CarInspectorPatches {
 
     [HarmonyPostfix]
-    [HarmonyPatch(typeof(CarInspector), "Awake")]
-    public static void Awake(ref Window ____window) {
+    [HarmonyPatch(typeof(CarInspector), "Populate")]
+    public static void Populate(ref Window ____window) {
         var windowAutoHeight = ____window.gameObject!.GetComponent<CarInspectorAutoHeightBehavior>()!;
         windowAutoHeight.ExpandOrders(AutoEngineerMode.Road, 100);
         windowAutoHeight.ExpandOrders(AutoEngineerMode.Yard, 50);
+        windowAutoHeight.UpdateWindowHeight();
     }
 
     [HarmonyPostfix]

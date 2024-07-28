@@ -7,6 +7,8 @@ This mod is useless on its own, but it is allowing other mods to extend car insp
 * Download `CarInspectorResizer-VERSION.zip` from the releases page
 * Install with [Railloader]([https://www.nexusmods.com/site/mods/21](https://railroader.stelltis.ch/))
 
+## Warning
+This mod is not compatible with any mod that modified CarInspector window height.
 
 ## Instructions for modders:
 1. Add reference to this mod (duh)
@@ -31,12 +33,6 @@ internal static class CarInspectorPatches {
         
         // this will expand car inspector window by 50 units when Road mode on orders tab is selected        
         windowAutoHeight.ExpandOrders(AutoEngineerMode.Road, 50);  
-        
-        // this will expand car inspector window by 100 units when Yard mode on orders tab is selected        
-        windowAutoHeight.ExpandOrders(AutoEngineerMode.Yard, 100); 
-        
-        // update window height
-        windowAutoHeight.UpdateWindowHeight();
     }
 }
 ```

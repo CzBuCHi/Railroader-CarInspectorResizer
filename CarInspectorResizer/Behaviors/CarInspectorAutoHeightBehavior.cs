@@ -120,7 +120,7 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
 
         var size = _Window.GetContentSize();
         CarInspectorResizerPlugin.ConsoleMessage($"Updated window height {height}");
-        _Window.SetContentSize(new Vector2(size.x, height));
+        _Window.SetContentSize(new Vector2(size.x - 2, height));
     }
 
 }

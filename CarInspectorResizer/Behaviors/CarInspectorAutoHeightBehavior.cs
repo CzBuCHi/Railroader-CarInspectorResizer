@@ -24,23 +24,26 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
     private readonly Dictionary<string, float> _TabExpansions = new();
     private readonly Dictionary<AutoEngineerMode, float> _OrdersExpansions = new();
 
-    private static Vector2? _OriginalWindowSize;
-
     public float MinHeight { get; set; } = 330;
 
     public void Awake() {
         _Window = gameObject!.GetComponent<Window>()!;
-        SelectedTabState.ValueChanged = _ => UpdateWindowHeight();
+        SelectedTabState.ValueChanged = value => {
+            CarInspectorResizerPlugin.ConsoleMessage($"SelectedTabState: {value}");
+            UpdateWindowHeight();
+        };
     }
 
     internal void Populate(Car car) {
+        _ExpandAlways = 0;
+        _TabExpansions.Clear();
+        _OrdersExpansions.Clear();
+
         if (_Car == car) {
             return;
         }
 
         _Car = car;
-
-        _OriginalWindowSize ??= _Window.GetContentSize();
 
         foreach (var observer in _Observers) {
             observer.Dispose();
@@ -49,26 +52,34 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
         _Observers.Clear();
 
         var persistence = new AutoEngineerPersistence(_Car.KeyValueObject!);
-        _Observers.Add(persistence.ObserveOrders(_ => UpdateWindowHeight()));
-        _Observers.Add(persistence.ObserveContextualOrdersChanged(UpdateWindowHeight));
+        _Observers.Add(persistence.ObserveOrders(_ => {
+            UpdateWindowHeight();
+        }, false));
+        _Observers.Add(persistence.ObserveContextualOrdersChanged(() => {
+            UpdateWindowHeight();
+        }));
     }
 
     public void ExpandAlways(float height) {
         _ExpandAlways += height;
+        CarInspectorResizerPlugin.ConsoleMessage($"expanded by {height} to {_ExpandAlways}");
     }
 
     public void ExpandTab(string tabName, float height) {
+        
         _TabExpansions.TryGetValue(tabName, out var value);
         _TabExpansions[tabName] = value + height;
+        CarInspectorResizerPlugin.ConsoleMessage($"'{tabName}' expanded by {height} to {_TabExpansions[tabName]}");
     }
 
     public void ExpandOrders(AutoEngineerMode mode, float height) {
         _OrdersExpansions.TryGetValue(mode, out var value);
         _OrdersExpansions[mode] = value + height;
+        CarInspectorResizerPlugin.ConsoleMessage($"'{mode}' expanded by {height} to {_OrdersExpansions[mode]}");
     }
 
     public void UpdateWindowHeight() {
-        if (_Car == null || _OriginalWindowSize == null) {
+        if (_Car == null || SelectedTabState.Value == null) {
             return;
         }
 
@@ -76,27 +87,40 @@ public sealed class CarInspectorAutoHeightBehavior : MonoBehaviour {
         var helper = new AutoEngineerOrdersHelper(_Car, persistence);
         var mode = helper.Mode();
 
-        var height = _OriginalWindowSize.Value.y + _ExpandAlways;
+        var height = MinHeight + _ExpandAlways;
+        if (_ExpandAlways > 0) {
+            CarInspectorResizerPlugin.ConsoleMessage($"+{_ExpandAlways}");
+        }
 
         if (SelectedTabState.Value != null) {
             _TabExpansions.TryGetValue(SelectedTabState.Value, out var tabExpansion);
             height += tabExpansion;
+            if (tabExpansion > 0) {
+                CarInspectorResizerPlugin.ConsoleMessage($"+{tabExpansion} (tabExpansion)");
+            }
         }
 
         if (SelectedTabState.Value == "orders") {
             _OrdersExpansions.TryGetValue(mode, out var ordersExpansion);
             height += ordersExpansion;
+            if (ordersExpansion > 0) {
+                CarInspectorResizerPlugin.ConsoleMessage($"+{ordersExpansion} (ordersExpansion)");
+            }
 
             if (!string.IsNullOrEmpty(persistence.PassengerModeStatus!)) {
                 height += 30;
+                CarInspectorResizerPlugin.ConsoleMessage("+30 (PassengerModeStatus)");
             }
 
             if (persistence.ContextualOrders!.Count > 0) {
                 height += 30;
+                CarInspectorResizerPlugin.ConsoleMessage("+30 (ContextualOrders)");
             }
         }
 
-        _Window.SetContentSize(new Vector2(_OriginalWindowSize.Value.x, Mathf.Max(MinHeight, height)));
+        var size = _Window.GetContentSize();
+        CarInspectorResizerPlugin.ConsoleMessage($"Updated window height {height}");
+        _Window.SetContentSize(new Vector2(size.x, height));
     }
 
 }

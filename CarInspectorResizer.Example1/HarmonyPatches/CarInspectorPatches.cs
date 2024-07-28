@@ -1,7 +1,5 @@
 ﻿namespace CarInspectorResizer.Example1.HarmonyPatches;
 
-using System;
-using System.Collections.Generic;
 using CarInspectorResizer.Behaviors;
 using Game.Messages;
 using HarmonyLib;
@@ -22,21 +20,20 @@ internal static class CarInspectorPatches {
     public static void Populate(ref Window ____window) {
         var windowAutoHeight = ____window.gameObject!.GetComponent<CarInspectorAutoHeightBehavior>()!;
         windowAutoHeight.ExpandAlways(30);
-        windowAutoHeight.ExpandTab("equipment", 50);
-        windowAutoHeight.ExpandOrders(AutoEngineerMode.Road, 50);
-        windowAutoHeight.UpdateWindowHeight();
+        windowAutoHeight.ExpandTab("equipment", 45);
+        windowAutoHeight.ExpandOrders(AutoEngineerMode.Road, 30);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(CarInspector), "PopulatePanel")]
+    public static void PopulatePanel(UIPanelBuilder builder) {
+        builder.AddField("Global Button", builder.ButtonStrip(strip => strip.AddButton("Example1", () => { }), 4)!);
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(CarInspector), "PopulateEquipmentPanel")]
     public static void PopulateEquipmentPanel(UIPanelBuilder builder) {
-        builder.AddSection("Equipment Buttons", section => {
-            section.ButtonStrip(strip => {
-                strip.AddButton("Example1", () => { });
-                strip.AddButton("Example1", () => { });
-                strip.AddButton("Example1", () => { });
-            }, 4);
-        });
+        builder.AddSection("Equipment Buttons", section => section.ButtonStrip(strip => strip.AddButton("Example1", () => { }), 4));
     }
 
     [HarmonyPostfix]
@@ -45,13 +42,7 @@ internal static class CarInspectorPatches {
         var helper = new AutoEngineerOrdersHelper(____car, persistence);
         var mode = helper.Mode();
         if (mode == AutoEngineerMode.Road) {
-            builder.AddSection("Road Buttons", section => {
-                section.ButtonStrip(strip => {
-                    strip.AddButton("Example1", () => { });
-                    strip.AddButton("Example1", () => { });
-                    strip.AddButton("Example1", () => { });
-                }, 4);
-            });
+            builder.AddField("Road Buttons", builder.ButtonStrip(strip => strip.AddButton("Example1", () => { }), 4)!);
         }
     }
 

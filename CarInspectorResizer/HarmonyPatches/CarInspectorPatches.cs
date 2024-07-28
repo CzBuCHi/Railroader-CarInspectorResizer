@@ -22,11 +22,26 @@ internal static class CarInspectorPatches {
         ____selectedTabState = windowAutoHeight.SelectedTabState;
     }
 
-    [HarmonyPrefix]
+    [HarmonyPostfix]
     [HarmonyPatch(typeof(CarInspector), "Populate")]
     public static void Populate(Car car, ref Window ____window) {
         var windowAutoHeight = ____window.gameObject!.GetComponent<CarInspectorAutoHeightBehavior>()!;
         windowAutoHeight.Populate(car);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(CarInspector), "Show")]
+    public static void Show(Car car) {
+        var instance = Traverse.Create<CarInspector>()!.Field("_instance")!.GetValue<CarInspector>();
+        var windowAutoHeight = instance!.gameObject!.GetComponent<CarInspectorAutoHeightBehavior>()!;
+        windowAutoHeight.UpdateWindowHeight();
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(CarInspector), "Rebuild")]
+    public static void Rebuild(ref Window ____window) {
+        var windowAutoHeight = ____window.gameObject!.GetComponent<CarInspectorAutoHeightBehavior>()!;
+        windowAutoHeight.UpdateWindowHeight();
     }
 
 }
